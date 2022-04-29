@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import beans.ProdottoBean;
 import beans.UserBean;
 import model.*;
 
@@ -19,14 +21,14 @@ import model.*;
 @WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public LoginServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public LoginServlet() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -41,16 +43,16 @@ public class LoginServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
+
 		String username = (String) request.getParameter("email");
 		String password = (String) request.getParameter("password");
-		
+
 		UserDAO model = new UserDAO();
 		UserBean User;
 
 		try {
 			User = model.doRetriveByEmail(username); //prendo il cliente con l'email
-			
+
 			if(User.getEmail() == null)
 			{
 				RequestDispatcher fail = request.getRequestDispatcher("LoginFailed.jsp");
@@ -58,26 +60,46 @@ public class LoginServlet extends HttpServlet {
 			}
 			else
 			{
-				
+
 				if(password.equals(User.getPassword()))
 				{
 					request.setAttribute("utente", User);
-					RequestDispatcher succesfull = request.getRequestDispatcher("LoginSuccesfull.jsp");
-					succesfull.forward(request, response);
+					
+					if(User.getAdmin()) 
+					{
+						ProdottoDAO Dao = new ProdottoDAO();
+						ArrayList<ProdottoBean> ListaProdotti = null;
+						try {
+							ListaProdotti = (ArrayList<ProdottoBean>) Dao.doRetrieveAll("C.nome");
+							request.setAttribute("prodotti", ListaProdotti);
+							RequestDispatcher amministratore = request.getRequestDispatcher("adminPage.jsp");
+							amministratore.forward(request, response);
+						}catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					
+					else 
+					{
+						RequestDispatcher succesfull = request.getRequestDispatcher("LoginSuccesfull.jsp");
+						succesfull.forward(request, response);
+					}
 				}
+				
 				else
 				{
 					RequestDispatcher wrong = request.getRequestDispatcher("wrongPassword.jsp");
 					wrong.forward(request, response);
 				}
-				
+
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
-		
-		
+
+
 	}
 
 

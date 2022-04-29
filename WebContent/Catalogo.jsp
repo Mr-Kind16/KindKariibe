@@ -19,7 +19,6 @@
     <th>Descrizione</th>
   </tr>
   <% ArrayList<ProdottoBean> ListaProdotti = (ArrayList<ProdottoBean>) request.getAttribute("prodotti");
-  				
   				for(ProdottoBean prodotto : ListaProdotti)
   				{
   				%>
