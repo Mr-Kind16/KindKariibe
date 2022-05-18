@@ -77,7 +77,6 @@ public class UserDAO implements ModelInterface<UserBean> {
 	public UserBean doRetrieveByKey(String codiceFiscale) throws Exception {
 		UserBean bean = new UserBean();
 		String selectSQL = "SELECT * FROM utente WHERE codiceFiscale = ?";
-		System.out.println("\n\n\n\n 1234\n\n\n\n\n");
 
 		try(Connection connection = ds.getConnection()){
 			try(PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)){

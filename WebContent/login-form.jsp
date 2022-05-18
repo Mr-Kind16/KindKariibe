@@ -10,9 +10,6 @@
 </head>
 <body>  
 
-
-
-
     <br>
     <div class="login" id="loginDiv">
         <div>
